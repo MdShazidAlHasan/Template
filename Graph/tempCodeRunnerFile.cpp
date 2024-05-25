@@ -1,0 +1,1 @@
+        depth[child] = depth[vertex]+1;

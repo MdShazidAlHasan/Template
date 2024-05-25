@@ -3,28 +3,18 @@ using namespace std;
 
 const int N = 1e5;
 vector<int> graph[N];
-int parent[N];
+int depth[N], height[N];
 
-void dfs(int vertex, int par){
+void dfs(int vertex, int parent){
     // Take action on vertex after entering the vertex 
-    parent[vertex] = par;
     for(auto child:graph[vertex]){
         // Take action on a child before entering the child node
-        if(child==par)continue;
+        if(child==parent)continue;
+        depth[child] = depth[vertex]+1;
         dfs(child, vertex);
         // Take action on a child after existing child node
     }
     // Take action on vertex before exiting the vertex
-}
-
-vector<int> path(int v){
-    vector<int>ans;
-    while(v != -1){
-        ans.push_back(v);
-        v = parent[v];
-    }
-    reverse(ans.begin(), ans.end());
-    return ans;
 }
 
 int main(){
@@ -36,17 +26,23 @@ int main(){
         graph[v2].push_back(v1);
     }
     dfs(1, -1);
-    int x, y;cin>>x>>y;
-    vector<int>path_x = path(x);
-    vector<int>path_y = path(y);
-    int lca = -1;
-    for(int i=0;i<min(path_x.size(), path_y.size());i++){
-        if(path_x[i]==path_y[i]){
-            lca = path_x[i];
-        }else{
-            break;
+    int mx = -1;
+    int mx_node = -1;
+    for(int i=1;i<=n;i++){
+        if(depth[i]>mx){
+            mx = depth[i];
+            mx_node = i;
+        }
+        depth[i] = 0;
+    }
+    dfs(mx_node, -1);
+    mx = -1;
+    mx_node = -1;
+    for(int i=1;i<=n;i++){
+        if(depth[i]>mx){
+            mx = depth[i];
+            mx_node = i;
         }
     }
-    cout<<lca<<endl;
-    
+    cout<<mx<<endl;
 }
