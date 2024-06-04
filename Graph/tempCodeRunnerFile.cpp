@@ -1,1 +1,2 @@
-        depth[child] = depth[vertex]+1;
+
+    {2, -1}, {2, 1},
