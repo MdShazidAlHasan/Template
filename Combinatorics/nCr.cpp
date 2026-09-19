@@ -2,49 +2,58 @@
 using namespace std;
 
 #define int long long
-const int MAXN = 1e6;
-const int MOD = 1e9+7;
+
+const int MAXN = 1e6 + 5;
+const int mod = 1e9 + 7;
+
 int fac[MAXN], infac[MAXN];
 
-int expo(int a, int b){
-    if(b==0){
+int expo(int a, int b)
+{
+    if (b == 0)
         return 1;
-    }
-    if(b%2==0){
-        int x = expo(a, b/2);
-        return (x*x)%MOD;
-    }else{
-        int x = expo(a, b/2);
-        int ans = (x*x)%MOD;
-        return (ans*a)%MOD;
-    }
+
+    int x = expo(a, b / 2);
+    x = x * x % mod;
+
+    if (b % 2)
+        x = x * a % mod;
+
+    return x;
 }
 
-int inverse(int a){
-    return expo(a, MOD-2);
+int inverse(int a)
+{
+    return expo(a, mod - 2);
 }
 
-void compute_factorials(){
+void compute_factorials()
+{
     fac[0] = 1;
-    infac[0] = 1;
-    for(int i=1;i<MAXN;i++){
-        fac[i] = (fac[i-1]*i)%MOD;
-        infac[i] = inverse(fac[i]);
-    }
-} 
 
-// nCr = n! / r! * (n - r)!
-int nCr(int n, int r){
-    if(n<0 or r<0 or r>n){
-        return 0;
-    }
-    int num = fac[n];
-    int den = (infac[r])*(infac[n-r])%MOD;
-    return (num*den)%MOD;
+    for (int i = 1; i < MAXN; i++)
+        fac[i] = fac[i - 1] * i % mod;
+
+    infac[MAXN - 1] = inverse(fac[MAXN - 1]);
+
+    for (int i = MAXN - 2; i >= 0; i--)
+        infac[i] = infac[i + 1] * (i + 1) % mod;
 }
 
-signed main(){
+int nCr(int n, int r)
+{
+    if (n < 0 || r < 0 || r > n)
+        return 0;
+
+    return fac[n] * infac[r] % mod * infac[n - r] % mod;
+}
+
+signed main()
+{
     compute_factorials();
-    int n, m;cin>>n>>m;
-    cout<<nCr(m, n)<<endl;
+
+    int n, m;
+    cin >> n >> m;
+
+    cout << nCr(n, m) << '\n';
 }
